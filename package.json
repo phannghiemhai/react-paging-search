@@ -1,5 +1,5 @@
 {
-  "name": "react-phannh",
+  "name": "react-paging-search",
   "version": "0.0.1",
   "description": "Phannh First React NPM package",
   "main": "build/index.js",
@@ -7,8 +7,7 @@
     "react": "^15.5.4"
   },
   "dependencies": {
-    "react": "^15.5.4",
-    "webpack": "^2.6.1"
+    "react": "^15.5.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -16,8 +15,8 @@
     "build": "webpack"
   },
   "author": {
-    "name": "Your name",
-    "email": "your email"
+    "name": "Phan Nghiem Hai",
+    "email": "phannghiemhai@gmail.com"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -25,6 +24,11 @@
     "babel-loader": "^7.0.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^1.5.1"
+    "babel-preset-env": "^1.5.1",
+    "css-loader": "^2.0.0",
+    "node-sass": "^4.11.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^2.7.0"
   }
 }
