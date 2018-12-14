@@ -141,13 +141,17 @@ class ReactPagingSearch extends React.Component {
     return (
       <span className='input-container full-parent flex'>
         <input className='full-parent'
-          onKeyDown={e => this.handleKeyDown(e)}
+          onKeyDown={ e => this.handleKeyDown(e) }
           onChange={this.onKeywordChange}
           onFocus={ _ => this.toggleResultDropDown(true) }
           onBlur={ _ => this.toggleResultDropDown(false) } />
-        <span className='svg-container'><SearchIcon/></span>
+        { this.renderIcon() }
       </span>
     )
+  }
+
+  renderIcon() {
+    return <span className='svg-container'><SearchIcon/></span>
   }
 
   renderResult() {
@@ -155,19 +159,27 @@ class ReactPagingSearch extends React.Component {
       <span className='result-ul-container'
         onScroll={this.handleOnScroll} ref={ref => this.resultUlContainerRef = ref}>
         <ul className='result-ul' ref={ref => this.resultUlRef = ref}>
-          { this.state.options.map((option, idx) => (
-            <li key={option.value}
-              className={this.state.cursor == idx ? ' hover' : ''}
-              ref={ref => { if (this.state.cursor == idx) { this.cursorRef = ref }}}
-              onClick={_ => this.onClickOption(option)} 
-              onMouseOver={_ => this.onMouseOver(true, idx)}
-              onMouseLeave={_ => this.onMouseOver(false)}>
-              {getHighlightText(option.label, this.state.keyword, this.props.ignoreCase)}
-              </li>
-          ))}
+          { this.state.options.map((option, idx) => this.renderOption(option, idx)) }
         </ul>
       </span>
     )
+  }
+
+  renderOption(option, idx) {
+    return (
+      <li key={option.value}
+        className={ this.state.cursor == idx ? ' hover' : '' }
+        ref={ref => { if (this.state.cursor == idx) { this.cursorRef = ref }}}
+        onClick={_ => this.onClickOption(option)} 
+        onMouseOver={_ => this.onMouseOver(true, idx)}
+        onMouseLeave={_ => this.onMouseOver(false)}>
+        { this.renderOptionContent(option, idx) }
+      </li>
+    )
+  }
+
+  renderOptionContent(option, idx) {
+    return getHighlightText(option.label, this.state.keyword, this.props.ignoreCase);
   }
 
   componentDidUpdate() {
