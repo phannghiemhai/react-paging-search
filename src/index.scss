@@ -68,7 +68,8 @@
             overflow-x: hidden;
             cursor: pointer;
             text-align: left;
-            &:hover {
+            transition: var(--transition);
+            &:hover, &.hover {
                 background: #f0f3fa;
             }
             &:not(:last-child):after {
@@ -79,6 +80,7 @@
                 bottom: 0;
                 left: var(--padding);
             }
+            p { display: inline; }
         }
     }
 }

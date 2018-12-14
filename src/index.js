@@ -13,7 +13,7 @@ function cleanOptions(options) {
     let option = options[idx];
     optionsDict[option.value] = option;
   }
-  let res = []
+  let res = [];
   for (let key in optionsDict) {
     res.push(optionsDict[key]);
   }
@@ -28,9 +28,12 @@ class ReactPagingSearch extends React.Component {
       page: 1,
       keyword: '',
       options: [],
+      mouseOvering: false,
+      cursor: -1,
     }
     this.handleOnScroll = this.handleOnScroll.bind(this);
     this.onKeywordChange = this.onKeywordChange.bind(this);
+    this.onClickOption = this.onClickOption.bind(this);
   }
 
   toggleResultDropDown(value) {
@@ -45,11 +48,24 @@ class ReactPagingSearch extends React.Component {
         triedTimes = triedTimes + 1;
         continue;
       }
+      let newPage = page;
+      if (!options) {
+        options = [];
+      }
+      if (options.length > 0) {
+        newPage = newPage + 1;
+      }
       let newOptions = (page > 1) ? [...this.state.options, ...options] : [...options];
+      var newCursor = this.state.cursor;
+      if (page == 1) { //reset cursor
+        newCursor = -1;
+        this.cursorRef = null;
+      }
       this.setState({
         keyword: keyword,
-        page: page + 1,
+        page: newPage,
         options: cleanOptions(newOptions),
+        cursor: newCursor,
       })
       break;
     }
@@ -76,27 +92,122 @@ class ReactPagingSearch extends React.Component {
       await this.getOptions(this.state.keyword, this.state.page);
       this.loading = false
     }
-	}
+  }
+  
+  handleKeyDown(e) {
+    const { cursor, options } = this.state;
+    // arrow up/down button should select next/previous list element
+    if (e.keyCode === 38 && cursor > 0) { // key up
+      this.setState({ cursor: this.state.cursor - 1 })
+      this.changedCursor = true;
+    } else if (e.keyCode === 40 && cursor < options.length - 1) { // key down
+      this.setState({ cursor: this.state.cursor + 1 })
+      this.changedCursor = true;
+    } else if (e.keyCode === 13 && 0 <= cursor && cursor < options.length) {
+      this.onClickOption(options[cursor]);
+    }
+  }
+
+  onClickOption(option) {
+    if (this.props.onClickOption) {
+      this.props.onClickOption(option);
+    }
+    this.onMouseOver(false);
+  }
+
+  onMouseOver(value, cursor) {
+    var newState = {}
+    if (value != this.state.mouseOvering) {
+      newState.mouseOvering = value;
+    }
+    if (value) {
+      if (cursor != this.state.cursor) {
+        newState.cursor = cursor;
+      }
+    }
+    this.setState(newState);
+  }
 
   render() {
     return (
-      <span className={'react-paging-search full-parent' + (this.state.focus ? ' open' : ' close')}>
-        <span className='input-container full-parent flex'>
-          <input className='full-parent'
-            onChange={this.onKeywordChange}
-            onFocus={ _ => this.toggleResultDropDown(true) }
-            onBlur={ _ => this.toggleResultDropDown(false) } />
-          <span className='svg-container'><SearchIcon/></span>
-        </span>
-        <span className='result-ul-container' onScroll={this.handleOnScroll} ref={ref => this.resultUlContainerRef = ref}>
-          <ul className='result-ul' ref={ref => this.resultUlRef = ref}>
-            { this.state.options.map(option => (
-              <li key={option.value}>{option.label}</li>
-            ))}
-          </ul>
-        </span>
+      <span className={'react-paging-search full-parent' + (this.state.focus || this.state.mouseOvering ? ' open' : ' close')}>
+        { this.renderInput() }
+        { this.renderResult() }
       </span>
     );
   }
+
+  renderInput() {
+    return (
+      <span className='input-container full-parent flex'>
+        <input className='full-parent'
+          onKeyDown={e => this.handleKeyDown(e)}
+          onChange={this.onKeywordChange}
+          onFocus={ _ => this.toggleResultDropDown(true) }
+          onBlur={ _ => this.toggleResultDropDown(false) } />
+        <span className='svg-container'><SearchIcon/></span>
+      </span>
+    )
+  }
+
+  renderResult() {
+    return (
+      <span className='result-ul-container'
+        onScroll={this.handleOnScroll} ref={ref => this.resultUlContainerRef = ref}>
+        <ul className='result-ul' ref={ref => this.resultUlRef = ref}>
+          { this.state.options.map((option, idx) => (
+            <li key={option.value}
+              className={this.state.cursor == idx ? ' hover' : ''}
+              ref={ref => { if (this.state.cursor == idx) { this.cursorRef = ref }}}
+              onClick={_ => this.onClickOption(option)} 
+              onMouseOver={_ => this.onMouseOver(true, idx)}
+              onMouseLeave={_ => this.onMouseOver(false)}>
+              {getHighlightText(option.label, this.state.keyword, this.props.ignoreCase)}
+              </li>
+          ))}
+        </ul>
+      </span>
+    )
+  }
+
+  componentDidUpdate() {
+    if (this.cursorRef && this.changedCursor) {
+      let offset = this.resultUlContainerRef.scrollTop + this.resultUlContainerRef.clientHeight;
+      let targetOffset = this.cursorRef.offsetTop + this.cursorRef.clientHeight;
+      // if target [this.cursorRef.offsetTop, targetOffset] is out of the 
+      //  viewing window [this.resultUlContainerRef.scrollTop, offset]
+      let c1 = this.cursorRef.offsetTop < this.resultUlContainerRef.scrollTop;
+      let c2 = offset < targetOffset;
+      if ((c1 || c2) && !(c1 && c2)) {
+        this.cursorRef.scrollIntoView({behavior: 'smooth'});
+      }
+      this.changedCursor = false;
+    }
+  }
 }
+
 export default ReactPagingSearch;
+
+
+function getHighlightText(text, keyword, ignoreCase=true) {
+  let i, k;
+	if (!ignoreCase) {
+    k = keyword;
+    i = text.search(k);
+	} else {
+    k = keyword.toLowerCase();
+    i = text.toLowerCase().search(k);
+  }
+  if (!k) {
+    return (<p>{text}</p>);
+  }
+  if (i < 0) {
+    return (<p>{text}</p>);
+  }
+  let prev = text.substr(0, i);
+  let key = text.substr(i, k.length);
+  let post = text.substr(i + k.length, text.length - k.length);
+  return (
+      <p>{prev}<mark className='text_highlight'>{key}</mark>{post}</p>
+  );
+}
