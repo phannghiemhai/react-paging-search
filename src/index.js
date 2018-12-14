@@ -143,7 +143,8 @@ class ReactPagingSearch extends React.Component {
           onKeyDown={ e => this.handleKeyDown(e) }
           onChange={this.onKeywordChange}
           onFocus={ _ => this.toggleResultDropDown(true) }
-          onBlur={ _ => this.toggleResultDropDown(false) } />
+          onBlur={ _ => this.toggleResultDropDown(false) }
+          placeholder={this.props.placeholder} />
         { this.renderSufIcon(this.state) }
       </span>
     )
