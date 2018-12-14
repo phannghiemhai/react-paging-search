@@ -3,6 +3,8 @@
     --box-shadow: 0 2px 10px 0 rgba(191, 210, 235, 0.3);
     --transition: 0.1s;
     --padding: 8px;
+    --background: #E4E9F2;
+    --highlight-color: #37A7FF;
     position: relative;
     display: block;
     &, * {
@@ -36,7 +38,7 @@
     }
     .input-container {
         border: var(--border);
-        background: #E4E9F2;
+        background: var(--background);
         &.focus {
             background: white;
         }
@@ -50,9 +52,14 @@
         .svg-container {
             display: flex;
             height: 100%;
-            svg {
-                margin: auto;
-                height: 70%;
+            .close {
+                margin: auto 8px auto 0;
+                height: 12px;
+                cursor: pointer;
+                &:active {
+                    transform-origin: 50% 50%;
+                    transform: rotate(15deg)
+                }
             }
         }
     }
@@ -78,7 +85,7 @@
             text-align: left;
             transition: var(--transition);
             &:hover, &.hover {
-                background: #f0f3fa;
+                background: var(--background);
             }
             &:not(:last-child):after {
                 content: "";
@@ -93,6 +100,7 @@
                 mark {
                     background: transparent;
                     font-weight: bold;
+                    color: var(--highlight-color);
                 }
             }
         }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { getHighlightText, cleanOptions } from './utils';
 import './index.scss';
 
 const SearchIcon = () => (
@@ -6,19 +7,6 @@ const SearchIcon = () => (
     <path d='M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z' fill='rgba(191, 210, 235, 1)'></path>
   </svg>
 )
-
-function cleanOptions(options) {
-  let optionsDict = {}
-  for (let idx in options) {
-    let option = options[idx];
-    optionsDict[option.value] = option;
-  }
-  let res = [];
-  for (let key in optionsDict) {
-    res.push(optionsDict[key]);
-  }
-  return res
-}
 
 class ReactPagingSearch extends React.Component {
   constructor(props) {
@@ -71,15 +59,19 @@ class ReactPagingSearch extends React.Component {
     }
   }
   
-  async onKeywordChange(e) {
-    e.persist()
+  async changeKeyword(keyword) {
     if (this.debouceSearchTimeout) {
       clearTimeout(this.debouceSearchTimeout);
     }
     this.debouceSearchTimeout = setTimeout(async () => {
-      await this.getOptions(e.target.value, 1);
+      await this.getOptions(keyword, 1);
       this.resultUlContainerRef.scrollTop = 0;
     }, 200)
+  }
+
+  async onKeywordChange(e) {
+    e.persist()
+    await this.changeKeyword(e.target.value);
   }
 
 	async handleOnScroll(e) {
@@ -128,6 +120,11 @@ class ReactPagingSearch extends React.Component {
     this.setState(newState);
   }
 
+  async onClickClearIcon() {
+    await this.changeKeyword('');
+    this.inputRef.value = '';
+  }
+
   render() {
     return (
       <span className={'react-paging-search full-parent' + (this.state.focus || this.state.mouseOvering ? ' open' : ' close')}>
@@ -142,6 +139,7 @@ class ReactPagingSearch extends React.Component {
       <span className={'input-container full-parent flex' + (this.state.focus ? ' focus' : '')}>
         { this.renderPreIcon(this.state) }
         <input className='full-parent'
+          ref={ ref => this.inputRef = ref }
           onKeyDown={ e => this.handleKeyDown(e) }
           onChange={this.onKeywordChange}
           onFocus={ _ => this.toggleResultDropDown(true) }
@@ -156,7 +154,13 @@ class ReactPagingSearch extends React.Component {
   }
 
   renderSufIcon(state) {
-    return <span className='svg-container'><SearchIcon/></span>
+    return (
+      <span className='svg-container'>
+        <svg version="1.1" viewBox="0 0 357 357" className='close' onClick={_ => this.onClickClearIcon() }>
+          <g><g><polygon points="357,35.7 321.3,0 178.5,142.8 35.7,0 0,35.7 142.8,178.5 0,321.3 35.7,357 178.5,214.2 321.3,357 357,321.3 214.2,178.5" fill='rgba(161, 180, 205, 1)'/></g></g>
+        </svg>
+      </span>
+    )
   }
 
   renderResult() {
@@ -204,27 +208,3 @@ class ReactPagingSearch extends React.Component {
 }
 
 export default ReactPagingSearch;
-
-
-function getHighlightText(text, keyword, ignoreCase=true) {
-  let i, k;
-	if (!ignoreCase) {
-    k = keyword;
-    i = text.search(k);
-	} else {
-    k = keyword.toLowerCase();
-    i = text.toLowerCase().search(k);
-  }
-  if (!k) {
-    return (<p>{text}</p>);
-  }
-  if (i < 0) {
-    return (<p>{text}</p>);
-  }
-  let prev = text.substr(0, i);
-  let key = text.substr(i, k.length);
-  let post = text.substr(i + k.length, text.length - k.length);
-  return (
-      <p>{prev}<mark className='text_highlight'>{key}</mark>{post}</p>
-  );
-}
