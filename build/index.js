@@ -158,8 +158,7 @@ var SearchIcon = function SearchIcon() {
   return _react2.default.createElement(
     'svg',
     { focusable: 'false', xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 24 24' },
-    _react2.default.createElement('path', { d: 'M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z' }),
-    ' \\'
+    _react2.default.createElement('path', { d: 'M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z', fill: 'rgba(191, 210, 235, 1)' })
   );
 };
 
@@ -428,7 +427,8 @@ var ReactPagingSearch = function (_React$Component) {
 
       return _react2.default.createElement(
         'span',
-        { className: 'input-container full-parent flex' },
+        { className: 'input-container full-parent flex' + (this.state.focus ? ' focus' : '') },
+        this.renderPreIcon(this.state),
         _react2.default.createElement('input', { className: 'full-parent',
           onKeyDown: function onKeyDown(e) {
             return _this3.handleKeyDown(e);
@@ -440,11 +440,21 @@ var ReactPagingSearch = function (_React$Component) {
           onBlur: function onBlur(_) {
             return _this3.toggleResultDropDown(false);
           } }),
-        _react2.default.createElement(
-          'span',
-          { className: 'svg-container' },
-          _react2.default.createElement(SearchIcon, null)
-        )
+        this.renderSufIcon(this.state)
+      );
+    }
+  }, {
+    key: 'renderPreIcon',
+    value: function renderPreIcon(state) {
+      return null;
+    }
+  }, {
+    key: 'renderSufIcon',
+    value: function renderSufIcon(state) {
+      return _react2.default.createElement(
+        'span',
+        { className: 'svg-container' },
+        _react2.default.createElement(SearchIcon, null)
       );
     }
   }, {
@@ -455,38 +465,50 @@ var ReactPagingSearch = function (_React$Component) {
       return _react2.default.createElement(
         'span',
         { className: 'result-ul-container',
-          onScroll: this.handleOnScroll, ref: function ref(_ref8) {
-            return _this4.resultUlContainerRef = _ref8;
+          onScroll: this.handleOnScroll, ref: function ref(_ref7) {
+            return _this4.resultUlContainerRef = _ref7;
           } },
         _react2.default.createElement(
           'ul',
-          { className: 'result-ul', ref: function ref(_ref7) {
-              return _this4.resultUlRef = _ref7;
+          { className: 'result-ul', ref: function ref(_ref6) {
+              return _this4.resultUlRef = _ref6;
             } },
           this.state.options.map(function (option, idx) {
-            return _react2.default.createElement(
-              'li',
-              { key: option.value,
-                className: _this4.state.cursor == idx ? ' hover' : '',
-                ref: function ref(_ref6) {
-                  if (_this4.state.cursor == idx) {
-                    _this4.cursorRef = _ref6;
-                  }
-                },
-                onClick: function onClick(_) {
-                  return _this4.onClickOption(option);
-                },
-                onMouseOver: function onMouseOver(_) {
-                  return _this4.onMouseOver(true, idx);
-                },
-                onMouseLeave: function onMouseLeave(_) {
-                  return _this4.onMouseOver(false);
-                } },
-              getHighlightText(option.label, _this4.state.keyword, _this4.props.ignoreCase)
-            );
+            return _this4.renderOption(option, idx);
           })
         )
       );
+    }
+  }, {
+    key: 'renderOption',
+    value: function renderOption(option, idx) {
+      var _this5 = this;
+
+      return _react2.default.createElement(
+        'li',
+        { key: option.value,
+          className: this.state.cursor == idx ? ' hover' : '',
+          ref: function ref(_ref8) {
+            if (_this5.state.cursor == idx) {
+              _this5.cursorRef = _ref8;
+            }
+          },
+          onClick: function onClick(_) {
+            return _this5.onClickOption(option);
+          },
+          onMouseOver: function onMouseOver(_) {
+            return _this5.onMouseOver(true, idx);
+          },
+          onMouseLeave: function onMouseLeave(_) {
+            return _this5.onMouseOver(false);
+          } },
+        this.renderOptionContent(option, idx)
+      );
+    }
+  }, {
+    key: 'renderOptionContent',
+    value: function renderOptionContent(option, idx) {
+      return getHighlightText(option.label, this.state.keyword, this.props.ignoreCase);
     }
   }, {
     key: 'componentDidUpdate',
@@ -560,7 +582,7 @@ function getHighlightText(text, keyword) {
 
 exports = module.exports = __webpack_require__(4)(false);
 // Module
-exports.push([module.i, ".react-paging-search {\n  --border: 1px solid #c2c2c2;\n  --box-shadow: 0 2px 10px 0 rgba(191, 210, 235, 0.3);\n  --transition: 0.1s;\n  --padding: 8px;\n  position: relative;\n  display: block; }\n  .react-paging-search.full-parent, .react-paging-search .full-parent {\n    width: 100%;\n    height: 100%; }\n  .react-paging-search.open .input-container {\n    box-shadow: var(--box-shadow);\n    z-index: 201; }\n  .react-paging-search.open .result-ul-container {\n    max-height: 300px;\n    box-shadow: var(--box-shadow);\n    -webkit-box-shadow: var(--box-shadow);\n    overflow-y: auto; }\n  .react-paging-search.close .result-ul-container {\n    max-height: 0px;\n    border-top: none;\n    overflow: hidden; }\n  .react-paging-search .flex {\n    display: flex; }\n  .react-paging-search .input-container {\n    border: var(--border); }\n    .react-paging-search .input-container input {\n      outline: none;\n      border: none;\n      margin: 0;\n      padding: 0 0 0 var(--padding); }\n    .react-paging-search .input-container .svg-container {\n      display: flex;\n      height: 100%; }\n      .react-paging-search .input-container .svg-container svg {\n        margin: auto;\n        height: 70%; }\n  .react-paging-search .result-ul-container {\n    position: absolute;\n    top: calc(100% + 1px);\n    left: 0;\n    background: white;\n    z-index: 100;\n    width: 100%;\n    transition: max-height var(--transition);\n    -webkit-transition: max-height var(--transition);\n    /* For Safari 3.1 to 6.0 */\n    border: 1px solid #c2c2c2; }\n    .react-paging-search .result-ul-container ul {\n      margin: 0;\n      padding: 0; }\n    .react-paging-search .result-ul-container li {\n      position: relative;\n      padding: var(--padding);\n      overflow-x: hidden;\n      cursor: pointer;\n      text-align: left;\n      transition: var(--transition); }\n      .react-paging-search .result-ul-container li:hover, .react-paging-search .result-ul-container li.hover {\n        background: #f0f3fa; }\n      .react-paging-search .result-ul-container li:not(:last-child):after {\n        content: \"\";\n        position: absolute;\n        width: calc(100% - 2 * var(--padding));\n        border-bottom: 1px solid #c2c2c2;\n        bottom: 0;\n        left: var(--padding); }\n      .react-paging-search .result-ul-container li p {\n        display: inline; }\n", ""]);
+exports.push([module.i, ".react-paging-search {\n  --border: 1px solid #D4DDE8;\n  --box-shadow: 0 2px 10px 0 rgba(191, 210, 235, 0.3);\n  --transition: 0.1s;\n  --padding: 8px;\n  position: relative;\n  display: block;\n  /* Track */\n  /* Handle */\n  /* Handle on hover */ }\n  .react-paging-search, .react-paging-search * {\n    transition: var(--transition); }\n  .react-paging-search.full-parent, .react-paging-search .full-parent {\n    width: 100%;\n    height: 100%; }\n  .react-paging-search.open .input-container {\n    box-shadow: var(--box-shadow);\n    z-index: 201; }\n  .react-paging-search.open .result-ul-container {\n    max-height: 300px;\n    box-shadow: var(--box-shadow);\n    -webkit-box-shadow: var(--box-shadow);\n    overflow-y: auto; }\n  .react-paging-search.close .result-ul-container {\n    max-height: 0px;\n    border-top: none;\n    overflow: hidden; }\n  .react-paging-search .flex {\n    display: flex; }\n  .react-paging-search .input-container {\n    border: var(--border);\n    background: #E4E9F2; }\n    .react-paging-search .input-container.focus {\n      background: white; }\n    .react-paging-search .input-container input {\n      background: transparent;\n      outline: none;\n      border: none;\n      margin: 0;\n      padding: 0 0 0 var(--padding); }\n    .react-paging-search .input-container .svg-container {\n      display: flex;\n      height: 100%; }\n      .react-paging-search .input-container .svg-container svg {\n        margin: auto;\n        height: 70%; }\n  .react-paging-search .result-ul-container {\n    position: absolute;\n    top: calc(100% + 1px);\n    left: 0;\n    background: white;\n    z-index: 100;\n    width: 100%;\n    transition: max-height var(--transition);\n    -webkit-transition: max-height var(--transition);\n    /* For Safari 3.1 to 6.0 */\n    border: var(--border); }\n    .react-paging-search .result-ul-container ul {\n      margin: 0;\n      padding: 0; }\n    .react-paging-search .result-ul-container li {\n      position: relative;\n      padding: var(--padding);\n      overflow-x: hidden;\n      cursor: pointer;\n      text-align: left;\n      transition: var(--transition); }\n      .react-paging-search .result-ul-container li:hover, .react-paging-search .result-ul-container li.hover {\n        background: #f0f3fa; }\n      .react-paging-search .result-ul-container li:not(:last-child):after {\n        content: \"\";\n        position: absolute;\n        width: calc(100% - 2 * var(--padding));\n        border-bottom: var(--border);\n        bottom: 0;\n        left: var(--padding); }\n      .react-paging-search .result-ul-container li p {\n        display: inline; }\n        .react-paging-search .result-ul-container li p mark {\n          background: transparent;\n          font-weight: bold; }\n  .react-paging-search ::-webkit-scrollbar {\n    width: 4px;\n    /* remove scrollbar space */\n    background: transparent;\n    margin-left: -4px; }\n  .react-paging-search ::-webkit-scrollbar-track {\n    background: transparent;\n    background: rgba(187, 187, 187, 0.3); }\n  .react-paging-search ::-webkit-scrollbar-thumb {\n    background: transparent;\n    transition: var(--transition); }\n  .react-paging-search :hover::-webkit-scrollbar-thumb {\n    background: #BBB; }\n", ""]);
 
 
 
