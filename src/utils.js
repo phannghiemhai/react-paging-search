@@ -1,14 +1,15 @@
 import React from 'react';
 
 export function cleanOptions(options) {
-    let optionsDict = {};
-    for (let idx in options) {
-      let option = options[idx];
-      optionsDict[option.value] = option;
-    }
     let res = [];
-    for (let key in optionsDict) {
-      res.push(optionsDict[key]);
+    let keysSet = new Set();
+    for (let idx in options) {
+        let option = options[idx];
+        if (keysSet.has(option.value)) {
+            continue;
+        }
+        keysSet.add(option.value);
+        res.push(option);
     }
     return res;
 }

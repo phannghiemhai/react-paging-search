@@ -50,6 +50,7 @@
             padding: 0 0 0 var(--padding);
         }
         .svg-container {
+            position: relative;
             display: flex;
             height: 100%;
             .close {
@@ -99,7 +100,6 @@
                 display: inline;
                 mark {
                     background: transparent;
-                    font-weight: bold;
                     color: var(--highlight-color);
                 }
             }
@@ -120,12 +120,6 @@
     
     /* Handle */
     ::-webkit-scrollbar-thumb {
-        background: transparent;
-        transition: var(--transition); 
-    }
-
-    /* Handle on hover */
-    :hover::-webkit-scrollbar-thumb {
         background: #BBB; 
     }
 }

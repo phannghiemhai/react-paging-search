@@ -2,12 +2,6 @@ import React from 'react';
 import { getHighlightText, cleanOptions } from './utils';
 import './index.scss';
 
-const SearchIcon = () => (
-  <svg focusable='false' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>
-    <path d='M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z' fill='rgba(191, 210, 235, 1)'></path>
-  </svg>
-)
-
 class ReactPagingSearch extends React.Component {
   constructor(props) {
     super(props);
@@ -21,7 +15,7 @@ class ReactPagingSearch extends React.Component {
     }
     this.handleOnScroll = this.handleOnScroll.bind(this);
     this.onKeywordChange = this.onKeywordChange.bind(this);
-    this.onClickOption = this.onClickOption.bind(this);
+    this.onSelectOption = this.onSelectOption.bind(this);
   }
 
   toggleResultDropDown(value) {
@@ -89,20 +83,20 @@ class ReactPagingSearch extends React.Component {
   handleKeyDown(e) {
     const { cursor, options } = this.state;
     // arrow up/down button should select next/previous list element
-    if (e.keyCode === 38 && cursor > 0) { // key up
+    if (e.keyCode === 38 && cursor > 0) { // key Up
       this.setState({ cursor: this.state.cursor - 1 })
       this.changedCursor = true;
-    } else if (e.keyCode === 40 && cursor < options.length - 1) { // key down
+    } else if (e.keyCode === 40 && cursor < options.length - 1) { // key Down
       this.setState({ cursor: this.state.cursor + 1 })
       this.changedCursor = true;
-    } else if (e.keyCode === 13 && 0 <= cursor && cursor < options.length) {
-      this.onClickOption(options[cursor]);
+    } else if (e.keyCode === 13 && 0 <= cursor && cursor < options.length) { // key Enter
+      this.onSelectOption(options[cursor]);
     }
   }
 
-  onClickOption(option) {
-    if (this.props.onClickOption) {
-      this.props.onClickOption(option);
+  onSelectOption(option) {
+    if (this.props.onSelectOption) {
+      this.props.onSelectOption(option);
     }
     this.onMouseOver(false);
   }
@@ -137,7 +131,7 @@ class ReactPagingSearch extends React.Component {
   renderInput() {
     return (
       <span className={'input-container full-parent flex' + (this.state.focus ? ' focus' : '')}>
-        { this.renderPreIcon(this.state) }
+        { this.renderLeftIcon(this.state) }
         <input className='full-parent'
           ref={ ref => this.inputRef = ref }
           onKeyDown={ e => this.handleKeyDown(e) }
@@ -145,16 +139,17 @@ class ReactPagingSearch extends React.Component {
           onFocus={ _ => this.toggleResultDropDown(true) }
           onBlur={ _ => this.toggleResultDropDown(false) }
           placeholder={this.props.placeholder} />
-        { this.renderSufIcon(this.state) }
+        { this.renderClearIcon(this.state) }
+        { this.renderRightIcon(this.state) }
       </span>
     )
   }
 
-  renderPreIcon(state) {
-    return null;
+  renderLeftIcon(state) {
+    return <span className='svg-container'>{this.props.renderLeftIcon ? this.props.renderLeftIcon(state) : null }</span>
   }
 
-  renderSufIcon(state) {
+  renderClearIcon(state) {
     return (
       <span className='svg-container'>
         <svg version="1.1" viewBox="0 0 357 357" className='close' onClick={_ => this.onClickClearIcon() }>
@@ -162,6 +157,10 @@ class ReactPagingSearch extends React.Component {
         </svg>
       </span>
     )
+  }
+
+  renderRightIcon(state) {
+    return <span className='svg-container'>{this.props.renderRightIcon ? this.props.renderRightIcon(state) : null }</span>
   }
 
   renderResult() {
@@ -180,7 +179,7 @@ class ReactPagingSearch extends React.Component {
       <li key={option.value}
         className={ this.state.cursor == idx ? ' hover' : '' }
         ref={ref => { if (this.state.cursor == idx) { this.cursorRef = ref }}}
-        onClick={_ => this.onClickOption(option)} 
+        onClick={_ => this.onSelectOption(option)} 
         onMouseOver={_ => this.onMouseOver(true, idx)}
         onMouseLeave={_ => this.onMouseOver(false)}>
         { this.renderOptionContent(option, idx) }

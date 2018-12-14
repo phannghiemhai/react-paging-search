@@ -64,15 +64,96 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+module.exports = require("react");
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.cleanOptions = cleanOptions;
+exports.getHighlightText = getHighlightText;
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function cleanOptions(options) {
+    var res = [];
+    var keysSet = new Set();
+    for (var idx in options) {
+        var option = options[idx];
+        if (keysSet.has(option.value)) {
+            continue;
+        }
+        keysSet.add(option.value);
+        res.push(option);
+    }
+    return res;
+}
+
+function getHighlightText(text, keyword) {
+    var ignoreCase = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+
+    var i = void 0,
+        k = void 0;
+    if (!ignoreCase) {
+        k = keyword;
+        i = text.search(k);
+    } else {
+        k = keyword.toLowerCase();
+        i = text.toLowerCase().search(k);
+    }
+    if (!k) {
+        return _react2.default.createElement(
+            'p',
+            null,
+            text
+        );
+    }
+    if (i < 0) {
+        return _react2.default.createElement(
+            'p',
+            null,
+            text
+        );
+    }
+    var prev = text.substr(0, i);
+    var key = text.substr(i, k.length);
+    var post = text.substr(i + k.length, text.length - k.length);
+    return _react2.default.createElement(
+        'p',
+        null,
+        prev,
+        _react2.default.createElement(
+            'mark',
+            { className: 'text_highlight' },
+            key
+        ),
+        post
+    );
+}
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(3);
+var content = __webpack_require__(4);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -86,7 +167,7 @@ var options = {"hmr":true}
 options.transform = transform
 options.insertInto = undefined;
 
-var update = __webpack_require__(5)(content, options);
+var update = __webpack_require__(6)(content, options);
 
 if(content.locals) module.exports = content.locals;
 
@@ -118,13 +199,7 @@ if(false) {
 }
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-module.exports = require("react");
-
-/***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -136,11 +211,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(1);
+var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-__webpack_require__(0);
+var _utils = __webpack_require__(1);
+
+__webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -153,27 +230,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var SearchIcon = function SearchIcon() {
-  return _react2.default.createElement(
-    'svg',
-    { focusable: 'false', xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 24 24' },
-    _react2.default.createElement('path', { d: 'M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z', fill: 'rgba(191, 210, 235, 1)' })
-  );
-};
-
-function cleanOptions(options) {
-  var optionsDict = {};
-  for (var idx in options) {
-    var option = options[idx];
-    optionsDict[option.value] = option;
-  }
-  var res = [];
-  for (var key in optionsDict) {
-    res.push(optionsDict[key]);
-  }
-  return res;
-}
 
 var ReactPagingSearch = function (_React$Component) {
   _inherits(ReactPagingSearch, _React$Component);
@@ -193,7 +249,7 @@ var ReactPagingSearch = function (_React$Component) {
     };
     _this.handleOnScroll = _this.handleOnScroll.bind(_this);
     _this.onKeywordChange = _this.onKeywordChange.bind(_this);
-    _this.onClickOption = _this.onClickOption.bind(_this);
+    _this.onSelectOption = _this.onSelectOption.bind(_this);
     return _this;
   }
 
@@ -257,7 +313,7 @@ var ReactPagingSearch = function (_React$Component) {
                 this.setState({
                   keyword: keyword,
                   page: newPage,
-                  options: cleanOptions(newOptions),
+                  options: (0, _utils.cleanOptions)(newOptions),
                   cursor: newCursor
                 });
                 return _context.abrupt('break', 21);
@@ -277,16 +333,15 @@ var ReactPagingSearch = function (_React$Component) {
       return getOptions;
     }()
   }, {
-    key: 'onKeywordChange',
+    key: 'changeKeyword',
     value: function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(keyword) {
         var _this2 = this;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                e.persist();
                 if (this.debouceSearchTimeout) {
                   clearTimeout(this.debouceSearchTimeout);
                 }
@@ -296,7 +351,7 @@ var ReactPagingSearch = function (_React$Component) {
                       switch (_context2.prev = _context2.next) {
                         case 0:
                           _context2.next = 2;
-                          return _this2.getOptions(e.target.value, 1);
+                          return _this2.getOptions(keyword, 1);
 
                         case 2:
                           _this2.resultUlContainerRef.scrollTop = 0;
@@ -309,7 +364,7 @@ var ReactPagingSearch = function (_React$Component) {
                   }, _callee2, _this2);
                 })), 200);
 
-              case 3:
+              case 2:
               case 'end':
                 return _context3.stop();
             }
@@ -317,44 +372,25 @@ var ReactPagingSearch = function (_React$Component) {
         }, _callee3, this);
       }));
 
-      function onKeywordChange(_x3) {
+      function changeKeyword(_x3) {
         return _ref3.apply(this, arguments);
       }
 
-      return onKeywordChange;
+      return changeKeyword;
     }()
   }, {
-    key: 'handleOnScroll',
+    key: 'onKeywordChange',
     value: function () {
       var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(e) {
-        var offset;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                if (!this.loading) {
-                  _context4.next = 2;
-                  break;
-                }
+                e.persist();
+                _context4.next = 3;
+                return this.changeKeyword(e.target.value);
 
-                return _context4.abrupt('return');
-
-              case 2:
-                offset = e.target.scrollTop + this.resultUlContainerRef.clientHeight;
-
-                if (!(Math.abs(offset - this.resultUlRef.clientHeight) <= 10)) {
-                  _context4.next = 8;
-                  break;
-                }
-
-                this.loading = true;
-                _context4.next = 7;
-                return this.getOptions(this.state.keyword, this.state.page);
-
-              case 7:
-                this.loading = false;
-
-              case 8:
+              case 3:
               case 'end':
                 return _context4.stop();
             }
@@ -362,8 +398,53 @@ var ReactPagingSearch = function (_React$Component) {
         }, _callee4, this);
       }));
 
-      function handleOnScroll(_x4) {
+      function onKeywordChange(_x4) {
         return _ref5.apply(this, arguments);
+      }
+
+      return onKeywordChange;
+    }()
+  }, {
+    key: 'handleOnScroll',
+    value: function () {
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(e) {
+        var offset;
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                if (!this.loading) {
+                  _context5.next = 2;
+                  break;
+                }
+
+                return _context5.abrupt('return');
+
+              case 2:
+                offset = e.target.scrollTop + this.resultUlContainerRef.clientHeight;
+
+                if (!(Math.abs(offset - this.resultUlRef.clientHeight) <= 10)) {
+                  _context5.next = 8;
+                  break;
+                }
+
+                this.loading = true;
+                _context5.next = 7;
+                return this.getOptions(this.state.keyword, this.state.page);
+
+              case 7:
+                this.loading = false;
+
+              case 8:
+              case 'end':
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this);
+      }));
+
+      function handleOnScroll(_x5) {
+        return _ref6.apply(this, arguments);
       }
 
       return handleOnScroll;
@@ -377,22 +458,23 @@ var ReactPagingSearch = function (_React$Component) {
       // arrow up/down button should select next/previous list element
 
       if (e.keyCode === 38 && cursor > 0) {
-        // key up
+        // key Up
         this.setState({ cursor: this.state.cursor - 1 });
         this.changedCursor = true;
       } else if (e.keyCode === 40 && cursor < options.length - 1) {
-        // key down
+        // key Down
         this.setState({ cursor: this.state.cursor + 1 });
         this.changedCursor = true;
       } else if (e.keyCode === 13 && 0 <= cursor && cursor < options.length) {
-        this.onClickOption(options[cursor]);
+        // key Enter
+        this.onSelectOption(options[cursor]);
       }
     }
   }, {
-    key: 'onClickOption',
-    value: function onClickOption(option) {
-      if (this.props.onClickOption) {
-        this.props.onClickOption(option);
+    key: 'onSelectOption',
+    value: function onSelectOption(option) {
+      if (this.props.onSelectOption) {
+        this.props.onSelectOption(option);
       }
       this.onMouseOver(false);
     }
@@ -411,6 +493,34 @@ var ReactPagingSearch = function (_React$Component) {
       this.setState(newState);
     }
   }, {
+    key: 'onClickClearIcon',
+    value: function () {
+      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _context6.next = 2;
+                return this.changeKeyword('');
+
+              case 2:
+                this.inputRef.value = '';
+
+              case 3:
+              case 'end':
+                return _context6.stop();
+            }
+          }
+        }, _callee6, this);
+      }));
+
+      function onClickClearIcon() {
+        return _ref7.apply(this, arguments);
+      }
+
+      return onClickClearIcon;
+    }()
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -428,8 +538,11 @@ var ReactPagingSearch = function (_React$Component) {
       return _react2.default.createElement(
         'span',
         { className: 'input-container full-parent flex' + (this.state.focus ? ' focus' : '') },
-        this.renderPreIcon(this.state),
+        this.renderLeftIcon(this.state),
         _react2.default.createElement('input', { className: 'full-parent',
+          ref: function ref(_ref8) {
+            return _this3.inputRef = _ref8;
+          },
           onKeyDown: function onKeyDown(e) {
             return _this3.handleKeyDown(e);
           },
@@ -439,42 +552,73 @@ var ReactPagingSearch = function (_React$Component) {
           },
           onBlur: function onBlur(_) {
             return _this3.toggleResultDropDown(false);
-          } }),
-        this.renderSufIcon(this.state)
+          },
+          placeholder: this.props.placeholder }),
+        this.renderClearIcon(this.state),
+        this.renderRightIcon(this.state)
       );
     }
   }, {
-    key: 'renderPreIcon',
-    value: function renderPreIcon(state) {
-      return null;
-    }
-  }, {
-    key: 'renderSufIcon',
-    value: function renderSufIcon(state) {
+    key: 'renderLeftIcon',
+    value: function renderLeftIcon(state) {
       return _react2.default.createElement(
         'span',
         { className: 'svg-container' },
-        _react2.default.createElement(SearchIcon, null)
+        this.props.renderLeftIcon ? this.props.renderLeftIcon(state) : null
+      );
+    }
+  }, {
+    key: 'renderClearIcon',
+    value: function renderClearIcon(state) {
+      var _this4 = this;
+
+      return _react2.default.createElement(
+        'span',
+        { className: 'svg-container' },
+        _react2.default.createElement(
+          'svg',
+          { version: '1.1', viewBox: '0 0 357 357', className: 'close', onClick: function onClick(_) {
+              return _this4.onClickClearIcon();
+            } },
+          _react2.default.createElement(
+            'g',
+            null,
+            _react2.default.createElement(
+              'g',
+              null,
+              _react2.default.createElement('polygon', { points: '357,35.7 321.3,0 178.5,142.8 35.7,0 0,35.7 142.8,178.5 0,321.3 35.7,357 178.5,214.2 321.3,357 357,321.3 214.2,178.5', fill: 'rgba(161, 180, 205, 1)' })
+            )
+          )
+        )
+      );
+    }
+  }, {
+    key: 'renderRightIcon',
+    value: function renderRightIcon(state) {
+      return _react2.default.createElement(
+        'span',
+        { className: 'svg-container' },
+        this.props.renderRightIcon ? this.props.renderRightIcon(state) : null
       );
     }
   }, {
     key: 'renderResult',
     value: function renderResult() {
-      var _this4 = this;
+      var _this5 = this;
 
       return _react2.default.createElement(
         'span',
         { className: 'result-ul-container',
-          onScroll: this.handleOnScroll, ref: function ref(_ref7) {
-            return _this4.resultUlContainerRef = _ref7;
+          onScroll: this.handleOnScroll, ref: function ref(_ref10) {
+            return _this5.resultUlContainerRef = _ref10;
           } },
         _react2.default.createElement(
           'ul',
-          { className: 'result-ul', ref: function ref(_ref6) {
-              return _this4.resultUlRef = _ref6;
+          { className: 'result-ul', ref: function ref(_ref9) {
+              return _this5.resultUlRef = _ref9;
             } },
           this.state.options.map(function (option, idx) {
-            return _this4.renderOption(option, idx);
+            return _this5.renderOption(option, idx);
           })
         )
       );
@@ -482,25 +626,25 @@ var ReactPagingSearch = function (_React$Component) {
   }, {
     key: 'renderOption',
     value: function renderOption(option, idx) {
-      var _this5 = this;
+      var _this6 = this;
 
       return _react2.default.createElement(
         'li',
         { key: option.value,
           className: this.state.cursor == idx ? ' hover' : '',
-          ref: function ref(_ref8) {
-            if (_this5.state.cursor == idx) {
-              _this5.cursorRef = _ref8;
+          ref: function ref(_ref11) {
+            if (_this6.state.cursor == idx) {
+              _this6.cursorRef = _ref11;
             }
           },
           onClick: function onClick(_) {
-            return _this5.onClickOption(option);
+            return _this6.onSelectOption(option);
           },
           onMouseOver: function onMouseOver(_) {
-            return _this5.onMouseOver(true, idx);
+            return _this6.onMouseOver(true, idx);
           },
           onMouseLeave: function onMouseLeave(_) {
-            return _this5.onMouseOver(false);
+            return _this6.onMouseOver(false);
           } },
         this.renderOptionContent(option, idx)
       );
@@ -508,7 +652,7 @@ var ReactPagingSearch = function (_React$Component) {
   }, {
     key: 'renderOptionContent',
     value: function renderOptionContent(option, idx) {
-      return getHighlightText(option.label, this.state.keyword, this.props.ignoreCase);
+      return (0, _utils.getHighlightText)(option.label, this.state.keyword, this.props.ignoreCase);
     }
   }, {
     key: 'componentDidUpdate',
@@ -533,61 +677,18 @@ var ReactPagingSearch = function (_React$Component) {
 
 exports.default = ReactPagingSearch;
 
-
-function getHighlightText(text, keyword) {
-  var ignoreCase = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-
-  var i = void 0,
-      k = void 0;
-  if (!ignoreCase) {
-    k = keyword;
-    i = text.search(k);
-  } else {
-    k = keyword.toLowerCase();
-    i = text.toLowerCase().search(k);
-  }
-  if (!k) {
-    return _react2.default.createElement(
-      'p',
-      null,
-      text
-    );
-  }
-  if (i < 0) {
-    return _react2.default.createElement(
-      'p',
-      null,
-      text
-    );
-  }
-  var prev = text.substr(0, i);
-  var key = text.substr(i, k.length);
-  var post = text.substr(i + k.length, text.length - k.length);
-  return _react2.default.createElement(
-    'p',
-    null,
-    prev,
-    _react2.default.createElement(
-      'mark',
-      { className: 'text_highlight' },
-      key
-    ),
-    post
-  );
-}
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(4)(false);
-// Module
-exports.push([module.i, ".react-paging-search {\n  --border: 1px solid #D4DDE8;\n  --box-shadow: 0 2px 10px 0 rgba(191, 210, 235, 0.3);\n  --transition: 0.1s;\n  --padding: 8px;\n  position: relative;\n  display: block;\n  /* Track */\n  /* Handle */\n  /* Handle on hover */ }\n  .react-paging-search, .react-paging-search * {\n    transition: var(--transition); }\n  .react-paging-search.full-parent, .react-paging-search .full-parent {\n    width: 100%;\n    height: 100%; }\n  .react-paging-search.open .input-container {\n    box-shadow: var(--box-shadow);\n    z-index: 201; }\n  .react-paging-search.open .result-ul-container {\n    max-height: 300px;\n    box-shadow: var(--box-shadow);\n    -webkit-box-shadow: var(--box-shadow);\n    overflow-y: auto; }\n  .react-paging-search.close .result-ul-container {\n    max-height: 0px;\n    border-top: none;\n    overflow: hidden; }\n  .react-paging-search .flex {\n    display: flex; }\n  .react-paging-search .input-container {\n    border: var(--border);\n    background: #E4E9F2; }\n    .react-paging-search .input-container.focus {\n      background: white; }\n    .react-paging-search .input-container input {\n      background: transparent;\n      outline: none;\n      border: none;\n      margin: 0;\n      padding: 0 0 0 var(--padding); }\n    .react-paging-search .input-container .svg-container {\n      display: flex;\n      height: 100%; }\n      .react-paging-search .input-container .svg-container svg {\n        margin: auto;\n        height: 70%; }\n  .react-paging-search .result-ul-container {\n    position: absolute;\n    top: calc(100% + 1px);\n    left: 0;\n    background: white;\n    z-index: 100;\n    width: 100%;\n    transition: max-height var(--transition);\n    -webkit-transition: max-height var(--transition);\n    /* For Safari 3.1 to 6.0 */\n    border: var(--border); }\n    .react-paging-search .result-ul-container ul {\n      margin: 0;\n      padding: 0; }\n    .react-paging-search .result-ul-container li {\n      position: relative;\n      padding: var(--padding);\n      overflow-x: hidden;\n      cursor: pointer;\n      text-align: left;\n      transition: var(--transition); }\n      .react-paging-search .result-ul-container li:hover, .react-paging-search .result-ul-container li.hover {\n        background: #f0f3fa; }\n      .react-paging-search .result-ul-container li:not(:last-child):after {\n        content: \"\";\n        position: absolute;\n        width: calc(100% - 2 * var(--padding));\n        border-bottom: var(--border);\n        bottom: 0;\n        left: var(--padding); }\n      .react-paging-search .result-ul-container li p {\n        display: inline; }\n        .react-paging-search .result-ul-container li p mark {\n          background: transparent;\n          font-weight: bold; }\n  .react-paging-search ::-webkit-scrollbar {\n    width: 4px;\n    /* remove scrollbar space */\n    background: transparent;\n    margin-left: -4px; }\n  .react-paging-search ::-webkit-scrollbar-track {\n    background: transparent;\n    background: rgba(187, 187, 187, 0.3); }\n  .react-paging-search ::-webkit-scrollbar-thumb {\n    background: transparent;\n    transition: var(--transition); }\n  .react-paging-search :hover::-webkit-scrollbar-thumb {\n    background: #BBB; }\n", ""]);
-
-
-
 /***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(5)(false);
+// Module
+exports.push([module.i, ".react-paging-search {\n  --border: 1px solid #D4DDE8;\n  --box-shadow: 0 2px 10px 0 rgba(191, 210, 235, 0.3);\n  --transition: 0.1s;\n  --padding: 8px;\n  --background: #E4E9F2;\n  --highlight-color: #37A7FF;\n  position: relative;\n  display: block;\n  /* Track */\n  /* Handle */ }\n  .react-paging-search, .react-paging-search * {\n    transition: var(--transition); }\n  .react-paging-search.full-parent, .react-paging-search .full-parent {\n    width: 100%;\n    height: 100%; }\n  .react-paging-search.open .input-container {\n    box-shadow: var(--box-shadow);\n    z-index: 201; }\n  .react-paging-search.open .result-ul-container {\n    max-height: 300px;\n    box-shadow: var(--box-shadow);\n    -webkit-box-shadow: var(--box-shadow);\n    overflow-y: auto; }\n  .react-paging-search.close .result-ul-container {\n    max-height: 0px;\n    border-top: none;\n    overflow: hidden; }\n  .react-paging-search .flex {\n    display: flex; }\n  .react-paging-search .input-container {\n    border: var(--border);\n    background: var(--background); }\n    .react-paging-search .input-container.focus {\n      background: white; }\n    .react-paging-search .input-container input {\n      background: transparent;\n      outline: none;\n      border: none;\n      margin: 0;\n      padding: 0 0 0 var(--padding); }\n    .react-paging-search .input-container .svg-container {\n      position: relative;\n      display: flex;\n      height: 100%; }\n      .react-paging-search .input-container .svg-container .close {\n        margin: auto 8px auto 0;\n        height: 12px;\n        cursor: pointer; }\n        .react-paging-search .input-container .svg-container .close:active {\n          transform-origin: 50% 50%;\n          transform: rotate(15deg); }\n      .react-paging-search .input-container .svg-container .search {\n        margin: auto;\n        height: 24px; }\n  .react-paging-search .result-ul-container {\n    position: absolute;\n    top: calc(100% + 1px);\n    left: 0;\n    background: white;\n    z-index: 100;\n    width: 100%;\n    transition: max-height var(--transition);\n    -webkit-transition: max-height var(--transition);\n    /* For Safari 3.1 to 6.0 */\n    border: var(--border); }\n    .react-paging-search .result-ul-container ul {\n      margin: 0;\n      padding: 0; }\n    .react-paging-search .result-ul-container li {\n      position: relative;\n      padding: var(--padding);\n      overflow-x: hidden;\n      cursor: pointer;\n      text-align: left;\n      transition: var(--transition); }\n      .react-paging-search .result-ul-container li:hover, .react-paging-search .result-ul-container li.hover {\n        background: var(--background); }\n      .react-paging-search .result-ul-container li:not(:last-child):after {\n        content: \"\";\n        position: absolute;\n        width: calc(100% - 2 * var(--padding));\n        border-bottom: var(--border);\n        bottom: 0;\n        left: var(--padding); }\n      .react-paging-search .result-ul-container li p {\n        display: inline; }\n        .react-paging-search .result-ul-container li p mark {\n          background: transparent;\n          color: var(--highlight-color); }\n  .react-paging-search ::-webkit-scrollbar {\n    width: 4px;\n    /* remove scrollbar space */\n    background: transparent;\n    margin-left: -4px; }\n  .react-paging-search ::-webkit-scrollbar-track {\n    background: transparent;\n    background: rgba(187, 187, 187, 0.3); }\n  .react-paging-search ::-webkit-scrollbar-thumb {\n    background: #BBB; }\n", ""]);
+
+
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -678,7 +779,7 @@ function toComment(sourceMap) {
 }
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -747,7 +848,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(6);
+var	fixUrls = __webpack_require__(7);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -1084,7 +1185,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 
