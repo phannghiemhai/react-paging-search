@@ -1,7 +1,7 @@
 {
   "name": "react-paging-search",
   "version": "0.0.1",
-  "description": "Phannh First React NPM package",
+  "description": "A simple React component supports paging search",
   "main": "build/index.js",
   "peerDependencies": {
     "react": "^15.5.4"
