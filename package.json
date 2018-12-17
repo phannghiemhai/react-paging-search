@@ -2,7 +2,14 @@
   "name": "react-paging-search",
   "version": "0.0.1",
   "description": "A simple React component supports paging search",
+  "keywords": ["react", "search", "paging"],
+  "homepage": "https://github.com/phannghiemhai/react-paging-search",
+  "license": "MIT",
   "main": "build/index.js",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/phannghiemhai/react-paging-search.git"
+  },
   "peerDependencies": {
     "react": "^15.5.4"
   },
