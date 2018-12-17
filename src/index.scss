@@ -62,6 +62,10 @@
                     transform: rotate(15deg)
                 }
             }
+            > * {
+                margin-top: auto;
+                margin-bottom: auto;
+            }
         }
     }
     .result-ul-container {
